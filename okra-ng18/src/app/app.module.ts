@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { OkraWidgetComponent } from './okra-widget/okra-widget.component';
 import { OkraFormComponent } from './okra-form/okra-form.component';
+import { OktaAuthModule, OKTA_CONFIG } from '@okta/okta-angular';
+import { OktaAuth } from '@okta/okta-auth-js';
 
 @NgModule({
   declarations: [
@@ -16,9 +18,22 @@ import { OkraFormComponent } from './okra-form/okra-form.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    OktaAuthModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: OKTA_CONFIG,
+      useValue: {
+        oktaAuth: new OktaAuth({
+          issuer: 'https://{yourOktaDomain}/oauth2/default',
+          clientId: '{yourClientId}',
+          redirectUri: window.location.origin + '/login/callback',
+          scopes: ['openid', 'profile', 'email']
+        })
+      }
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
